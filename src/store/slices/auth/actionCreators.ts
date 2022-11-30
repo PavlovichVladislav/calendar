@@ -1,6 +1,6 @@
-import axios from "axios";
 import { setAuth, setError, setIsLoading, setUser } from ".";
 import { AppDispatch } from "../..";
+import UserService from "../../../api/UserService";
 import { IUser } from "../../../models/IUser";
 
 export const login =
@@ -8,7 +8,7 @@ export const login =
       try {
          dispatch(setIsLoading(true));
          setTimeout(async () => {
-            const response = await axios.get<IUser[]>("./users.json");
+            const response = await UserService.getUsers();
             const mockUser = response.data.find(
                (user) =>
                   username === user.username && password === user.password
@@ -19,6 +19,7 @@ export const login =
                localStorage.setItem("username", mockUser.username);
                dispatch(setAuth(true));
                dispatch(setUser(mockUser));
+               dispatch(setError(''));
             } else {
                dispatch(setError("Некорректный логин или пароль"));
             }
@@ -28,3 +29,11 @@ export const login =
          dispatch(setError("Ошибка при авторизации"));
       }
    };
+
+export const logout = () => async (dispatch: AppDispatch) => {
+      localStorage.removeItem("auth");
+      localStorage.removeItem("username");
+
+      dispatch(setUser({} as IUser));
+      dispatch(setAuth(false));
+};
