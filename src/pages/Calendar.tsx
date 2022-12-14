@@ -4,11 +4,14 @@ import EventCalendar from "../components/EventCalendar";
 import EventForm from "../components/EventForm";
 import { useTypedSelector } from "../hooks/useTypedSelector";
 import { useAppDispatch } from "../hooks/useTypesDispatch";
-import { fetchGuests } from "../store/slices/event/action-creators";
+import {
+   createEvent,
+   fetchGuests,
+} from "../store/slices/event/action-creators";
 
 const Calendar: FC = () => {
    const [modalVisible, setModalVisible] = useState<boolean>(false);
-   const { guests } = useTypedSelector((state) => state.event);
+   const { guests, events } = useTypedSelector((state) => state.event);
    const dispatch = useAppDispatch();
 
    useEffect(() => {
@@ -17,6 +20,7 @@ const Calendar: FC = () => {
 
    return (
       <Layout>
+         {JSON.stringify(events)}
          <EventCalendar events={[]} />
          <Row justify="center">
             <Button onClick={() => setModalVisible(true)}>
@@ -29,7 +33,12 @@ const Calendar: FC = () => {
             footer={null}
             onCancel={() => setModalVisible(false)}
          >
-            <EventForm guests={guests} />
+            <EventForm
+               guests={guests}
+               submit={(event) => {
+                  dispatch(createEvent(event));
+               }}
+            />
          </Modal>
       </Layout>
    );
