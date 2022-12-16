@@ -8,7 +8,7 @@ import { rules } from "../utils/rules";
 
 interface EventFormProps {
    guests: IUser[];
-   submit: (event: IEvent) => void 
+   submit: (event: IEvent) => void;
 }
 
 const EventForm: FC<EventFormProps> = ({ guests, submit }) => {
@@ -22,13 +22,13 @@ const EventForm: FC<EventFormProps> = ({ guests, submit }) => {
 
    const selectDate = (date: Date | null) => {
       if (date) {
-         setEvent({...event, date: formatDate(date)})
+         setEvent({ ...event, date: formatDate(date) });
       }
    };
 
    const submitForm = () => {
-      submit({...event, author: username})
-   }
+      submit({ ...event, author: username });
+   };
 
    return (
       <Form onFinish={submitForm}>
@@ -44,7 +44,14 @@ const EventForm: FC<EventFormProps> = ({ guests, submit }) => {
                }
             />
          </Form.Item>
-         <Form.Item label="Дата события" name="date" rules={[rules.required()]}>
+         <Form.Item
+            label="Дата события"
+            name="date"
+            rules={[
+               rules.required(),
+               rules.isOutdated("Нельзя создать собтыие в прошлом"),
+            ]}
+         >
             <DatePicker onChange={(date: any) => selectDate(date?.toDate())} />
          </Form.Item>
          <Form.Item
